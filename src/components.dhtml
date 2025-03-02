@@ -1,0 +1,29 @@
+
+<div @name="controls">
+  <button>Select all</button>
+  <input type="text">
+
+  <script>
+
+  </script>
+</div>
+
+
+<div @name="todos">
+  <todo :for="e in items" :bind="e"/>
+
+  <script>
+    items = Array.from( {length: Math.floor(Math.random() * 20)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'hi ' + Math.random() }))
+  </script>
+</div>
+
+
+<div @name="todo" class="todo">
+  <input type="checkbox" :checked="done">
+  <p>{ text }</p>
+  <button>Delete</button>
+
+  <script>
+
+  </script>
+</div>

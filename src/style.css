@@ -1,0 +1,33 @@
+/* reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* defaults */
+html,
+input {
+  font-family: system-ui;
+}
+
+body {
+  margin: 0 auto;
+  display: grid;
+  max-width: 550px;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+
+  position: sticky;
+  top: 0;
+}
+
+/* components */
+.todo {
+  display: flex;
+  
+  p { flex-grow: 1 }
+}
