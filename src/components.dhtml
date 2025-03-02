@@ -1,10 +1,31 @@
+<script>
+import { $ } from '/@nue/view-transitions.js'
+import { router } from '/@nue/app-router.js'
+
+router.configure({ route: '/:filter/' })
+</script>
 
 <div @name="controls">
-  <button>Select all</button>
-  <input type="text">
+  <form>
+    <input type="text">
+    <button>Submit</button>
+  </form>
+
+  <div>
+    <a href="/">All</a>
+    <a href="/done/">Done</a>
+    <a href="/todo/">ToDo</a>
+  </div>
 
   <script>
-
+    router = router
+    mounted() {
+      router.initialize({ root: this.root })
+      router.bind('filter', (_, {path}) => {
+        $('[aria-current=page')?.removeAttribute('aria-current')
+        $(`[href="${path}"]`)?.setAttribute('aria-current', 'page')
+      })
+    }
   </script>
 </div>
 
