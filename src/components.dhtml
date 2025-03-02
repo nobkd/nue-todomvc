@@ -1,13 +1,12 @@
 <script>
-import { $ } from '/@nue/view-transitions.js'
 import { router } from '/@nue/app-router.js'
+import { addTodo, removeTodo, todoState, setSelected } from '/util.js'
 
-router.configure({ route: '/:filter/' })
 </script>
 
 <div @name="controls">
-  <form>
-    <input type="text">
+  <form @submit.prevent="addTodo">
+    <input type="text" name="todo" required>
     <button>Submit</button>
   </form>
 
@@ -19,11 +18,12 @@ router.configure({ route: '/:filter/' })
 
   <script>
     router = router
+    addTodo = addTodo
+
     mounted() {
       router.initialize({ root: this.root })
       router.bind('filter', (_, {path}) => {
-        $('[aria-current=page')?.removeAttribute('aria-current')
-        $(`[href="${path}"]`)?.setAttribute('aria-current', 'page')
+        setSelected(`a[href="${path}"]`, 'aria-current', 'page')
       })
     }
   </script>
@@ -40,11 +40,13 @@ router.configure({ route: '/:filter/' })
 
 
 <div @name="todo" class="todo">
-  <input type="checkbox" :checked="done">
+  <input type="checkbox" :checked="done" @click="todoState">
   <p>{ text }</p>
-  <button>Delete</button>
+  <button @click="removeTodo">Delete</button>
 
   <script>
+    removeTodo = removeTodo
+    todoState = todoState
 
   </script>
 </div>
