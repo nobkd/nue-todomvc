@@ -23,7 +23,7 @@ if (window.app) await mount('app', window.app)
 
 <header @name="add-todo">
   <h1>todos</h1>
-  <form>
+  <form @submit.prevent="void">
     <input type="checkbox" id="toggle-all" @click="toggleAll">
     <input type="text" @keydown.enter="addTodo" placeholder="What needs to be done?">
   </form>
