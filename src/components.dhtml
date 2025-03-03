@@ -7,23 +7,26 @@ router.configure({ route: '/:filter/', persistent_params: ['todos'] })
 if (window.app) await mount('app', window.app)
 </script>
 
+
 <div @name="app">
-  <add />
+  <add-todo />
   <todos :items />
   <filters :if="items.length" />
 
   <script>
     items = Array.from( {length: Math.floor(Math.random() * 10)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'hi ' + Math.random() }))
 
-    mounted() {
-      router.initialize({ root: this.root })
-    }
+    mounted() { router.initialize({ root: this.root }) }
   </script>
 </div>
 
-<header @name="add">
-  <input type="checkbox" id="toggle-all" @click="toggleAll">
-  <input type="text" @keydown.enter="addTodo" placeholder="What needs to be done?">
+
+<header @name="add-todo">
+  <a href="/"><h1>todos</h1></a>
+  <div>
+    <input type="checkbox" id="toggle-all" @click="toggleAll">
+    <input type="text" @keydown.enter="addTodo" placeholder="What needs to be done?">
+  </div>
 
   <script>
     addTodo = addTodo
@@ -31,10 +34,11 @@ if (window.app) await mount('app', window.app)
   </script>
 </header>
 
+
 <footer @name="filters">
   <p>{0} items left</p>
 
-  <div>
+  <div class="filters">
     <a href="/">All</a>
     <a href="/active/">Active</a>
     <a href="/completed/">Completed</a>
@@ -44,13 +48,12 @@ if (window.app) await mount('app', window.app)
 
   <script>
     mounted() {
-      router.bind('filter', (_, {path}) => {
-        setSelected(`a[href="${path}"]`, 'aria-current', 'page')
+      router.bind('filter', (data, {path}) => {
+        setSelected(`footer a[href="${path}"]`, 'aria-current', 'page')
       })
     }
   </script>
 </footer>
-
 
 
 <main @name="todos">

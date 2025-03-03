@@ -7,8 +7,10 @@
 
 /* defaults */
 html,
-input {
+input,
+button {
   font-family: system-ui;
+  font-size: inherit;
 }
 
 body {
@@ -16,19 +18,46 @@ body {
   max-width: 550px;
 }
 
-header,
-footer {
-  display: flex;
-  justify-content: center;
-  gap: 0.5em;
+a {
+  color: inherit;
+  text-decoration: inherit;
 }
 
-header {
-  position: sticky;
-  top: 0;
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 /* components */
+header {
+  position: sticky;
+  top: 0;
+  text-align: center;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+
+  a {
+    padding: 0.125em 0.35em;
+    border: solid 2px transparent;
+    border-radius: 0.5em;
+  }
+
+  [aria-current="page"] {
+    border-color: darkred;
+    pointer-events: none;
+  }
+}
+
 .todo {
   display: flex;
 
