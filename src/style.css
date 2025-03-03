@@ -4,11 +4,12 @@
   --primary: color-mix(in srgb, var(--root), white 50%);
   --secondary: color-mix(in srgb, var(--root), white 90%);
 
+  font-size: 18px;
   accent-color: var(--primary);
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--primary), transparent );
+  background-color: color-mix(in srgb, var(--primary), transparent);
 }
 
 /* reset */
@@ -16,6 +17,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  transition: all 200ms;
 }
 
 /* defaults */
@@ -31,7 +33,9 @@ body {
   max-width: 580px;
   background-color: var(--secondary);
 
-  > div {padding-inline: 1em;}
+  > div {
+    padding-inline: 1em;
+  }
 }
 
 a {
@@ -41,12 +45,31 @@ a {
 
 button,
 input {
-  background-color: transparent;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.4em;
+
+  background-color: var(--secondary);
   cursor: pointer;
+  border: none;
+  border-radius: 0.25em;
+  font-weight: 500;
+  color: gray;
+
+  &:hover,
+  &:active,
+  &:focus-visible {
+    color: initial;
+  }
+
+  main & {
+    margin: auto;
+  }
 }
 
-ul, p {
+ul,
+p {
   margin: 0;
   padding: 0;
 }
@@ -64,7 +87,7 @@ header {
   top: 0;
   text-align: center;
   background-color: var(--secondary);
-  box-shadow: 0 .5em .25em var(--secondary);
+  box-shadow: 0 0.5em 0.25em var(--secondary);
 }
 
 footer {
@@ -72,6 +95,7 @@ footer {
   align-items: center;
   justify-content: space-between;
   text-align: center;
+  font-size: small;
 }
 
 header,
@@ -106,18 +130,26 @@ nav {
       text-decoration-color: var(--primary);
     }
 
-    &[aria-current="page"] { text-decoration-style: solid }
+    &[aria-current="page"] {
+      text-decoration-style: solid;
+    }
   }
 
-
-  @media (width < 500) { flex-direction: column }
+  @media (width < 500) {
+    flex-direction: column;
+  }
 }
 
-form, li, footer {
+form,
+li,
+footer {
   padding: 0.75em;
 }
 
-form, ul, li, footer {
+form,
+ul,
+li,
+footer {
   border-radius: 0.25em;
   gap: 0.25em;
 }
@@ -139,6 +171,14 @@ ul {
 
 li {
   display: flex;
+  gap: 0.5em;
+
+  button {
+    opacity: 0;
+  }
+  :is(&:hover, &:focus-within) button {
+    opacity: 1;
+  }
 
   p {
     flex-grow: 1;
