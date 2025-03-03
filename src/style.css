@@ -87,18 +87,21 @@ nav {
 
   a {
     padding: 0.125em 0.35em;
-    border: solid 2px transparent;
-    border-radius: 0.5em;
+
+    text-decoration: underline dotted transparent 3px;
+    text-underline-offset: 0.25em;
+    text-decoration-skip-ink: none;
 
     &:hover,
     &:active,
     &:focus-visible {
-      border-color: var(--secondary);
+      text-decoration-color: var(--secondary);
     }
   }
 
   [aria-current="page"] {
-    border-color: var(--primary);
+    text-decoration-style: solid;
+    text-decoration-color: var(--primary);
   }
 }
 

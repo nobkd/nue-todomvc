@@ -14,7 +14,7 @@ if (window.app) await mount('app', window.app)
   <filters :if="items.length" />
 
   <script>
-    items = Array.from( {length: Math.floor(Math.random() * 10)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'hi ' + Math.random() }))
+    items = Array.from( {length: Math.floor(Math.random() * 10)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'Lorem ipsum dolor sit amet...' }))
 
     mounted() { router.initialize({ root: this.root }) }
   </script>
