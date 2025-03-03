@@ -1,52 +1,72 @@
 <script>
 import { router } from '/@nue/app-router.js'
-import { addTodo, removeTodo, todoState, setSelected } from '/util.js'
+import { mount } from '/@nue/mount.js'
+import { addTodo, removeTodo, todoState, toggleAll, setSelected } from '/model.js'
 
+router.configure({ route: '/:filter/', persistent_params: ['todos'] })
+if (window.app) await mount('app', window.app)
 </script>
 
-<div @name="controls">
-  <form @submit.prevent="addTodo">
-    <input type="text" name="todo" required>
-    <button>Submit</button>
-  </form>
-
-  <div>
-    <a href="/">All</a>
-    <a href="/done/">Done</a>
-    <a href="/todo/">ToDo</a>
-  </div>
+<div @name="app">
+  <add />
+  <todos :items />
+  <filters :if="items.length" />
 
   <script>
-    router = router
-    addTodo = addTodo
+    items = Array.from( {length: Math.floor(Math.random() * 10)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'hi ' + Math.random() }))
 
     mounted() {
       router.initialize({ root: this.root })
+    }
+  </script>
+</div>
+
+<header @name="add">
+  <input type="checkbox" id="toggle-all" @click="toggleAll">
+  <input type="text" @keydown.enter="addTodo" placeholder="What needs to be done?">
+
+  <script>
+    addTodo = addTodo
+    toggleAll = toggleAll
+  </script>
+</header>
+
+<footer @name="filters">
+  <p>{0} items left</p>
+
+  <div>
+    <a href="/">All</a>
+    <a href="/active/">Active</a>
+    <a href="/completed/">Completed</a>
+  </div>
+
+  <button>Clear completed</button>
+
+  <script>
+    mounted() {
       router.bind('filter', (_, {path}) => {
         setSelected(`a[href="${path}"]`, 'aria-current', 'page')
       })
     }
   </script>
-</div>
+</footer>
 
 
-<div @name="todos">
-  <todo :for="e in items" :bind="e"/>
 
-  <script>
-    items = Array.from( {length: Math.floor(Math.random() * 20)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'hi ' + Math.random() }))
-  </script>
-</div>
+<main @name="todos">
+  <ul>
+    <todo :for="e in items" :bind="e" />
+  </ul>
+</main>
 
 
-<div @name="todo" class="todo">
+<li @name="todo" class="todo">
   <input type="checkbox" :checked="done" @click="todoState">
   <p>{ text }</p>
-  <button @click="removeTodo">Delete</button>
+  <button @click="removeTodo">&times;</button>
 
   <script>
     removeTodo = removeTodo
     todoState = todoState
-
   </script>
-</div>
+</li>

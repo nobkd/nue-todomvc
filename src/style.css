@@ -13,14 +13,17 @@ input {
 
 body {
   margin: 0 auto;
-  display: grid;
   max-width: 550px;
 }
 
-header {
+header,
+footer {
   display: flex;
   justify-content: center;
+  gap: 0.5em;
+}
 
+header {
   position: sticky;
   top: 0;
 }
@@ -28,6 +31,8 @@ header {
 /* components */
 .todo {
   display: flex;
-  
-  p { flex-grow: 1 }
+
+  p {
+    flex-grow: 1;
+  }
 }
