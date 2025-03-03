@@ -1,8 +1,14 @@
 /* colors */
 :root {
-  --primary: lightpink;
-  --secondary: color-mix(in srgb, var(--primary), white 50%);
-  --ternary: color-mix(in srgb, var(--primary), white 90%);
+  --root: lightpink;
+  --primary: color-mix(in srgb, var(--root), white 50%);
+  --secondary: color-mix(in srgb, var(--root), white 90%);
+
+  accent-color: var(--primary);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--primary), transparent );
 }
 
 /* reset */
@@ -23,7 +29,8 @@ button {
 body {
   margin: 0 auto;
   max-width: 560px;
-  background-color: var(--ternary);
+  background-color: var(--secondary);
+  margin-bottom: 3em;
 
   > div {padding-inline: 1em;}
 }
@@ -50,15 +57,15 @@ h1 {
   margin: 0;
   font-size: 100px;
   font-weight: 400;
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 header {
   position: sticky;
   top: 0;
   text-align: center;
-  background-color: var(--ternary);
-  box-shadow: 0 .5em .25em var(--ternary);
+  background-color: var(--secondary);
+  box-shadow: 0 .5em .25em var(--secondary);
 }
 
 footer {
@@ -71,7 +78,7 @@ header,
 main,
 footer {
   margin-bottom: 1em;
-  border-bottom: solid 2px var(--secondary);
+  border-bottom: solid 2px var(--primary);
 }
 
 form,
@@ -94,15 +101,13 @@ nav {
 
     &:hover,
     &:active,
-    &:focus-visible {
-      text-decoration-color: var(--secondary);
+    &:focus-visible,
+    [aria-current="page"] {
+      text-decoration-color: var(--primary);
     }
   }
 
-  [aria-current="page"] {
-    text-decoration-style: solid;
-    text-decoration-color: var(--primary);
-  }
+  [aria-current="page"] { text-decoration-style: solid }
 }
 
 form, li, footer {
