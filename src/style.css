@@ -1,3 +1,10 @@
+/* colors */
+:root {
+  --primary: lightpink;
+  --secondary: color-mix(in srgb, var(--primary), white 50%);
+  --ternary: color-mix(in srgb, var(--primary), white 90%);
+}
+
 /* reset */
 *,
 *::before,
@@ -15,7 +22,10 @@ button {
 
 body {
   margin: 0 auto;
-  max-width: 550px;
+  max-width: 560px;
+  background-color: var(--ternary);
+
+  > div {padding-inline: 1em;}
 }
 
 a {
@@ -23,25 +33,54 @@ a {
   text-decoration: inherit;
 }
 
-button {
+button,
+input {
   background-color: transparent;
   border: none;
   cursor: pointer;
 }
 
+ul, p {
+  margin: 0;
+  padding: 0;
+}
+
 /* components */
+h1 {
+  margin: 0;
+  font-size: 100px;
+  font-weight: 400;
+  color: var(--secondary);
+}
+
 header {
   position: sticky;
   top: 0;
   text-align: center;
+  background-color: var(--ternary);
+  box-shadow: 0 .5em .25em var(--ternary);
 }
 
 footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
-.filters {
+header,
+main,
+footer {
+  margin-bottom: 1em;
+  border-bottom: solid 2px var(--secondary);
+}
+
+form,
+li,
+footer {
+  background-color: white;
+}
+
+nav {
   display: flex;
   align-items: center;
   gap: 0.25em;
@@ -50,15 +89,44 @@ footer {
     padding: 0.125em 0.35em;
     border: solid 2px transparent;
     border-radius: 0.5em;
+
+    &:hover,
+    &:active,
+    &:focus-visible {
+      border-color: var(--secondary);
+    }
   }
 
   [aria-current="page"] {
-    border-color: darkred;
-    pointer-events: none;
+    border-color: var(--primary);
   }
 }
 
-.todo {
+form, li, footer {
+  padding: 0.75em;
+}
+
+form, ul, li, footer {
+  border-radius: 0.25em;
+  gap: 0.25em;
+}
+
+form {
+  /* padding: 0.5em; */
+  display: flex;
+  gap: 0.25em;
+
+  [type="text"] {
+    width: 100%;
+    height: 2em;
+  }
+}
+
+ul {
+  display: grid;
+}
+
+li {
   display: flex;
 
   p {

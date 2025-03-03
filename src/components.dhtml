@@ -10,7 +10,7 @@ if (window.app) await mount('app', window.app)
 
 <div @name="app">
   <add-todo />
-  <todos :items />
+  <todos :items :if="items.length" />
   <filters :if="items.length" />
 
   <script>
@@ -22,11 +22,11 @@ if (window.app) await mount('app', window.app)
 
 
 <header @name="add-todo">
-  <a href="/"><h1>todos</h1></a>
-  <div>
+  <h1>todos</h1>
+  <form>
     <input type="checkbox" id="toggle-all" @click="toggleAll">
     <input type="text" @keydown.enter="addTodo" placeholder="What needs to be done?">
-  </div>
+  </form>
 
   <script>
     addTodo = addTodo
@@ -36,17 +36,19 @@ if (window.app) await mount('app', window.app)
 
 
 <footer @name="filters">
-  <p>{0} items left</p>
+  <p>{count} items left</p>
 
-  <div class="filters">
+  <nav>
     <a href="/">All</a>
     <a href="/active/">Active</a>
     <a href="/completed/">Completed</a>
-  </div>
+  </nav>
 
   <button>Clear completed</button>
 
   <script>
+    count = 0
+
     mounted() {
       router.bind('filter', (data, {path}) => {
         setSelected(`footer a[href="${path}"]`, 'aria-current', 'page')
@@ -63,7 +65,7 @@ if (window.app) await mount('app', window.app)
 </main>
 
 
-<li @name="todo" class="todo">
+<li @name="todo">
   <input type="checkbox" :checked="done" @click="todoState">
   <p>{ text }</p>
   <button @click="removeTodo">&times;</button>
