@@ -1,6 +1,5 @@
 <script>
   import { router } from '/@nue/app-router.js'
-  import { mount } from '/@nue/mount.js'
   import { $ } from '/@nue/view-transitions.js'
   
   router.configure({ route: '/:filter' })
@@ -66,7 +65,7 @@
 
 
 <footer @name="filters">
-  <p><strong>{ count }</strong> items left</p>
+  <p>{ todo_count } items left</p>
   <nav>
     <a href="/">All</a>
     <a href="/active">Active</a>
@@ -78,7 +77,7 @@
     delDone = delDone
 
     mounted() {
-      const setCount = () => this.update({ count: todoCount(), done_count: todos.length - todoCount() })
+      const setCount = () => this.update({ todo_count: todoCount(), done_count: todos.length - todoCount() })
 
       router.on('filter', (_, { path }) => setSelected(`a[href="${path}"]`, 'aria-current', 'page'))
       addEventListener(key, setCount)
@@ -119,7 +118,7 @@
     mounted() {
       const setFiltered = (filter) => this.update({
         todos: todos.map((e,i) => {e.id = i; return e})
-          .filter(e => !router.state.filter || (router.state.filter == 'completed' ? e.done : !e.done))
+          .filter(e => !filter || (filter == 'completed' ? e.done : !e.done))
       })
 
       addEventListener(key, () => setFiltered(router.state.filter))
