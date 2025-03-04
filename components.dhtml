@@ -5,19 +5,20 @@
   
   router.configure({ route: '/:filter' })
   
+  const key = 'todos'
   const todos = load()
   emit()
-  addEventListener('todos', save)
-  // addEventListener('storage', ({key, oldValue, newValue}) => { key == 'todos' && oldValue != newValue && emit()})
+  addEventListener(key, save)
+  // addEventListener('storage', ({key, oldValue, newValue}) => { key == 'todos ' && oldValue != newValue && emit()})
 
   function setSelected(query, attr, val = true) {
     $(`[${attr}]`)?.removeAttribute(attr)
     $(query)?.setAttribute(attr, val)
   }
 
-  function load() { return JSON.parse(localStorage.getItem('todos') || '[]') }
-  function save() { localStorage.setItem('todos', JSON.stringify(todos)) }
-  function emit(name = 'todos') { dispatchEvent(new Event(name)) }
+  function load() { return JSON.parse(localStorage.getItem(key) || '[]') }
+  function save() { localStorage.setItem(key, JSON.stringify(todos)) }
+  function emit(name=key) { dispatchEvent(new Event(name)) }
 
   function add(text) {
     todos.push({ done: false, text })
@@ -57,7 +58,7 @@
     len = todos.length
     mounted() {
       router.initialize({ root: this.root })
-      addEventListener('todos', () => this.update({ len: todos.length }))
+      addEventListener(key, () => this.update({ len: todos.length }))
     }
   </script>
 </div>
@@ -77,7 +78,7 @@
     add = add
     state() { return todos.length != 0 && todoCount() == 0 }
 
-    mounted() { addEventListener('todos', () => this.update({ checked: this.state() })) }
+    mounted() { addEventListener(key, () => this.update({ checked: this.state() })) }
   </script>
 </header>
 
@@ -99,7 +100,7 @@
     delDone = delDone
 
     mounted() {
-      addEventListener('todos', () => {
+      addEventListener(key, () => {
         const count = todoCount()
         this.update({ count, done_count: todos.length - count })
       })
@@ -130,7 +131,7 @@
           .filter(e => !filter || (filter == 'completed' ? e.done : !e.done))
       })
 
-      addEventListener('todos', () => filtered(router.state.filter))
+      addEventListener(key, () => filtered(router.state.filter))
       router.bind('filter', ({ filter }) => filtered(filter))
       filtered(router.state.filter)
     }
