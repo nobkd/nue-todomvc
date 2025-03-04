@@ -1,8 +1,12 @@
 /* colors */
 :root {
+  color-scheme: light;
+
   --root: lightpink;
-  --primary: color-mix(in srgb, var(--root), white 50%);
-  --secondary: color-mix(in srgb, var(--root), white 90%);
+  --bg: light-dark(white, #001);
+
+  --primary: color-mix(in srgb, var(--root), var(--bg) 50%);
+  --secondary: color-mix(in srgb, var(--root), var(--bg) 90%);
 
   font-size: 18px;
   accent-color: var(--primary);
@@ -60,7 +64,7 @@ input {
   &:hover,
   &:active,
   &:focus-visible {
-    color: initial;
+    color: inherit;
   }
 
   main & {
@@ -108,7 +112,7 @@ footer {
 form,
 li,
 footer {
-  background-color: white;
+  background-color: var(--bg);
 }
 
 nav {
