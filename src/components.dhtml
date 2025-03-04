@@ -12,8 +12,9 @@
   if (window.app) await mount('app', window.app)
 
   function add({ target }) {
-    console.log({ done: false, text: Object.fromEntries(new FormData(target)).todo })
-    target.reset()
+    const text = $('[type=text]', target)
+    console.log({ done: false, text: text.value })
+    text.value = ''
     // router.set({ todos })
   }
   function remove({ target }) {
@@ -25,6 +26,8 @@
   function stateAll({ target }) {
     console.log(target)
   }
+
+  function log({target}) {console.log(target)}
 </script>
 
 
@@ -42,32 +45,34 @@
 <header @name="add-todo">
   <h1>todos</h1>
   <form @submit.prevent="add">
-    <input type="checkbox" @change="console.log">
-    <input type="text" name="todo" placeholder="What needs to be done?">
+    <input type="checkbox" @change="log">
+    <input type="text" placeholder="What needs to be done?">
   </form>
 
   <script>
     add = add
+    log = log
   </script>
 </header>
 
 
 <footer @name="filters">
-  <p>{count} items left</p>
+  <p>{ count } items left</p>
   <nav>
     <a href="/">All</a>
-    <a href="/active/">Active</a>
-    <a href="/completed/">Completed</a>
+    <a href="/active">Active</a>
+    <a href="/completed">Completed</a>
   </nav>
   <button>Clear completed</button>
 
   <script>
-    count = 0
+    count = (router.state.todos || []).filter(e => !e.done).length
 
     mounted() {
       router.bind('filter', (data, { path }) => {
-        setSelected(`footer a[href="${path}"]`, 'aria-current', 'page')
+        setSelected(`a[href="${path}"]`, 'aria-current', 'page')
       })
+      setSelected(`a[href="${window.location.pathname}"]`, 'aria-current', 'page')
     }
   </script>
 </footer>
@@ -85,10 +90,11 @@
 
 
 <li @name="todo">
-  <input type="checkbox" :checked="done" @change="console.log">
+  <input type="checkbox" :checked="done" @change="log">
   <p>{ text }</p>
-  <button @click="console.log">&times;</button>
+  <button @click="log">&times;</button>
 
   <script>
+    log = log
   </script>
 </li>
