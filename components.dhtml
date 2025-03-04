@@ -68,7 +68,7 @@
   <h1>todos</h1>
   <form @submit.prevent="add($refs.todo.value); $refs.todo.value = ''">
     <input type="checkbox" :checked="checked" @change="toggleAll(!checked)">
-    <input type="text" ref="todo" placeholder="What needs to be done?">
+    <input type="text" ref="todo" placeholder="What needs to be done?" required>
   </form>
 
   <script>
@@ -91,7 +91,6 @@
     <a href="/completed">Completed</a>
   </nav>
   <button style="opacity:{done_count}" @click="delDone">Clear completed</button>
-  <!-- TODO: hide button -->
 
   <script>
     count = todoCount()
@@ -100,23 +99,19 @@
     delDone = delDone
 
     mounted() {
-      addEventListener(key, () => {
-        const count = todoCount()
-        this.update({ count, done_count: todos.length - count })
-      })
-      router.bind('filter', ({ filter }, { path }) => {
-        setSelected(`a[href="${path}"]`, 'aria-current', 'page')
-      })
+      addEventListener(key, () => this.update({ count: todoCount(), done_count: todos.length - todoCount() }))
+      router.on('filter', (_, { path }) => setSelected(`a[href="${path}"]`, 'aria-current', 'page'))
+      setSelected(`a[href="${window.location.pathname}"]`, 'aria-current', 'page')
     }
   </script>
 </footer>
 
 
-<main @name="todos">
+<main @name="todos" :if="todos.length">
   <ul>
     <li :for="{ id, done, text } in todos" :bind="e">
       <input type="checkbox" :checked="done" @change="setState(id, !done)">
-      <p>{ text }</p>
+      <p>{ text }</p><!-- TODO: make editable -->
       <button @click="del(id)">&times;</button>
     </li>
   </ul>
@@ -132,7 +127,7 @@
       })
 
       addEventListener(key, () => filtered(router.state.filter))
-      router.bind('filter', ({ filter }) => filtered(filter))
+      router.on('filter', ({ filter }) => filtered(filter))
       filtered(router.state.filter)
     }
   </script>
