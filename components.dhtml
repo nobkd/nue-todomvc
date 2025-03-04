@@ -72,6 +72,7 @@
     <a href="/completed">Completed</a>
   </nav>
   <button @click="del">Clear completed</button>
+  <!-- TODO: hide button -->
 
   <script>
     count = this.getCount()
