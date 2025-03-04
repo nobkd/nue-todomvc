@@ -1,21 +1,39 @@
 <script>
-import { router } from '/@nue/app-router.js'
-import { mount } from '/@nue/mount.js'
-import { addTodo, removeTodo, todoState, toggleAll, setSelected } from '/model.js'
+  import { router } from '/@nue/app-router.js'
+  import { mount } from '/@nue/mount.js'
+  import { $ } from '/@nue/view-transitions.js'
 
-router.configure({ route: '/:filter/', persistent_params: ['todos'] })
-if (window.app) await mount('app', window.app)
+  function setSelected(query, attr, val = true) {
+    $(`[${attr}]`)?.removeAttribute(attr)
+    $(query)?.setAttribute(attr, val)
+  }
+
+  router.configure({ route: '/:filter', persistent_params: ['todos'] })
+  if (window.app) await mount('app', window.app)
+
+  function add({ target }) {
+    console.log({ done: false, text: Object.fromEntries(new FormData(target)).todo })
+    target.reset()
+    // router.set({ todos })
+  }
+  function remove({ target }) {
+    console.log(target)
+  }
+  function state({ target }) {
+    console.log(target)
+  }
+  function stateAll({ target }) {
+    console.log(target)
+  }
 </script>
 
 
 <div @name="app">
   <add-todo />
-  <todos :items :if="items.length" />
-  <filters :if="items.length" />
+  <todos />
+  <filters />
 
   <script>
-    items = Array.from( {length: Math.floor(Math.random() * 10)}, (i) => ({ id: i, done: Math.random() >= 0.5, text: 'Lorem ipsum dolor sit amet...' }))
-
     mounted() { router.initialize({ root: this.root }) }
   </script>
 </div>
@@ -23,34 +41,31 @@ if (window.app) await mount('app', window.app)
 
 <header @name="add-todo">
   <h1>todos</h1>
-  <form @submit.prevent="void">
-    <input type="checkbox" id="toggle-all" @click="toggleAll">
-    <input type="text" @keydown.enter="addTodo" placeholder="What needs to be done?">
+  <form @submit.prevent="add">
+    <input type="checkbox" @change="console.log">
+    <input type="text" name="todo" placeholder="What needs to be done?">
   </form>
 
   <script>
-    addTodo = addTodo
-    toggleAll = toggleAll
+    add = add
   </script>
 </header>
 
 
 <footer @name="filters">
   <p>{count} items left</p>
-
   <nav>
     <a href="/">All</a>
     <a href="/active/">Active</a>
     <a href="/completed/">Completed</a>
   </nav>
-
   <button>Clear completed</button>
 
   <script>
     count = 0
 
     mounted() {
-      router.bind('filter', (data, {path}) => {
+      router.bind('filter', (data, { path }) => {
         setSelected(`footer a[href="${path}"]`, 'aria-current', 'page')
       })
     }
@@ -60,18 +75,20 @@ if (window.app) await mount('app', window.app)
 
 <main @name="todos">
   <ul>
-    <todo :for="e in items" :bind="e" />
+    <todo :for="e in todos" :bind="e" />
   </ul>
+
+  <script>
+    todos = router.state.todos || []
+  </script>
 </main>
 
 
 <li @name="todo">
-  <input type="checkbox" :checked="done" @click="todoState">
+  <input type="checkbox" :checked="done" @change="console.log">
   <p>{ text }</p>
-  <button @click="removeTodo">&times;</button>
+  <button @click="console.log">&times;</button>
 
   <script>
-    removeTodo = removeTodo
-    todoState = todoState
   </script>
 </li>
