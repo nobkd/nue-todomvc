@@ -184,7 +184,21 @@ li {
     opacity: 1;
   }
 
-  p {
+  p, input[type="text"] {
     flex-grow: 1;
   }
+
+  p {
+    + input[type="text"] {
+      display: none;
+    }
+    
+    &[hidden] {
+      display: none;
+      + input[type="text"] {
+        display: initial;
+      }
+    }
+  }
+
 }
