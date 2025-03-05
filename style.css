@@ -1,6 +1,6 @@
 /* colors */
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
 
   --root: lightpink;
   --bg: light-dark(white, #001);
