@@ -5,9 +5,9 @@
   router.configure({ route: '/:filter' })
   
   const key = 'todos'
-  const todos = load()
-  emit()
-  addEventListener(key, save)
+  // const todos = load()
+  // emit()
+  // addEventListener(key, save)
   // addEventListener('storage', ({key, oldValue, newValue}) => { key == 'todos ' && oldValue != newValue && emit()})
 
   function setSelected(query, attr, val = true) {
@@ -15,95 +15,88 @@
     $(query)?.setAttribute(attr, val)
   }
 
-  function load() { return JSON.parse(localStorage.getItem(key) || '[]') }
-  function save() { localStorage.setItem(key, JSON.stringify(todos)) }
-  function emit(name=key) { dispatchEvent(new Event(name)) }
+  // function load() { return JSON.parse(localStorage.getItem(key) || '[]') }
+  // function save() { localStorage.setItem(key, JSON.stringify(todos)) }
+  // function emit(name=key) { dispatchEvent(new Event(name)) }
 
-  function add(text) { todos.push({ done: false, text }); emit() }
-  function del(id) { todos.splice(id, 1); emit() }
-  function delDone() { todos.splice(0, todos.length,...todos.filter(e => !e.done)); emit() }
-  function toggleAll(done) { todos.forEach(e => e.done = done); emit() }
-  function setState(id, done) { todos[id].done = done; emit() }
-  function setText(id, text) { todos[id].text = text; emit() }
-  function todoCount() { return todos.filter(e => !e.done).length }
+  // function add(text) { todos.push({ done: false, text }); emit() }
+  // function del(id) { todos.splice(id, 1); emit() }
+  // function delDone() { todos.splice(0, todos.length,...todos.filter(e => !e.done)); emit() }
+  // function toggleAll(done) { todos.forEach(e => e.done = done); emit() }
+  // function setState(id, done) { todos[id].done = done; emit() }
+  // function setText(id, text) { todos[id].text = text; emit() }
+  // function todoCount() { return todos.filter(e => !e.done).length }
 </script>
 
 
 <div @name="app">
-  <add-todo />
-  <todos :if="len" />
-  <filters :if="len" />
+  <header>
+    <h1>todos</h1>
+    <form @submit.prevent="add">
+      <input type="checkbox" :checked="checked" @change="toggleAll(!checked)">
+      <input type="text" ref="todo" placeholder="What needs to be done?" required>
+    </form>
+  </header>
+  
+  <main :if="todos.length">
+    <ul>
+      <li :for="{ id, done, text } in filtered" :bind="e">
+        <input type="checkbox" :checked="done" @change="set(id, !done)">
+        <p @dblclick="edit" ref="display">{ text }</p>
+        <input type="text" :value="text" ref="edit" @keydown="editEnd" @blur="editEnd" data-id="{id}">
+        <button @click="del(id)">&times;</button>
+      </li>
+    </ul>
+  </main>
+
+  <footer :if="todos.length">
+    <p>{ tbd } items left</p>
+    <nav>
+      <a href="/">All</a>
+      <a href="/active">Active</a>
+      <a href="/completed">Completed</a>
+    </nav>
+    <p><button :if="tbd < todos.length" @click="delDone">Clear completed</button></p>
+  </footer>
 
   <script>
+    todos = JSON.parse(localStorage.getItem(key) || '[]')
+
+    tbd = this.todos.filter(e => !e.done).length
+    checked = this.todos.length != 0 && this.tbd == 0
+
+    // funcs
+    add() {
+      this.todos.push({ done: false, text: this.$refs.todo.value })
+      this.$refs.todo.value = ''
+    }
+
+    set(id, state) { this.todos[id].done = state }
+    del(id) { this.todos.splice(id, 1) }
+    delDone() { this.todos = this.todos.filter(e => !e.done) }
+
+    filter(type) {
+      router.set({ filter: type })
+      const which = type == 'completed' ? e => e.done
+                  : type == 'active' ? e => !e.done
+                  : () => true
+      this.filtered = this.todos.map((e, i) => ({ ...e, id: i })).filter(which)
+    }
+
+    // el
     mounted() {
       router.initialize({ root: this.root })
-      addEventListener(key, () => this.update({ len: todos.length }))
-      this.update({ len: todos.length })
+      this.filter(router.state.filter)
+    }
+
+    updated({ todos }) {
+      console.log(todos)
+      localStorage.setItem(key, JSON.stringify(todos))
     }
   </script>
 </div>
 
-
-<header @name="add-todo">
-  <h1>todos</h1>
-  <form @submit.prevent="add($refs.todo.value); $refs.todo.value = ''">
-    <input type="checkbox" :checked="checked" @change="toggleAll(!checked)">
-    <input type="text" ref="todo" placeholder="What needs to be done?" required>
-  </form>
-
-  <script>
-    toggleAll = toggleAll
-    add = add
-
-    mounted() { 
-      const setChecked = () => this.update({ checked: todos.length != 0 && todoCount() == 0 })
-      addEventListener(key, setChecked)
-      setChecked()
-    }
-  </script>
-</header>
-
-
-<footer @name="filters">
-  <p>{ todo_count } items left</p>
-  <nav>
-    <a href="/">All</a>
-    <a href="/active">Active</a>
-    <a href="/completed">Completed</a>
-  </nav>
-  <button style="opacity:{done_count}" @click="delDone">Clear completed</button>
-
-  <script>
-    delDone = delDone
-
-    mounted() {
-      const setCount = () => this.update({ todo_count: todoCount(), done_count: todos.length - todoCount() })
-
-      router.on('filter', (_, { path }) => setSelected(`a[href="${path}"]`, 'aria-current', 'page'))
-      addEventListener(key, setCount)
-
-      setSelected(`a[href="${window.location.pathname}"]`, 'aria-current', 'page')
-      setCount()
-    }
-  </script>
-</footer>
-
-
-<main @name="todos" :if="todos.length">
-  <ul>
-    <li :for="{ id, done, text } in todos" :bind="e">
-      <input type="checkbox" :checked="done" @change="setState(id, !done)">
-      <p @dblclick="edit" ref="display">{ text }</p>
-      <input type="text" :value="text" ref="edit" @keydown="editEnd" @blur="editEnd" data-id="{id}">
-      <button @click="del(id)">&times;</button>
-    </li>
-  </ul>
-
-  <script>
-    setState = setState
-    del = del
-
-    edit() { 
+    <!-- edit() { 
       this.$refs.display.setAttribute('hidden', true)
       this.$refs.edit.select()
      }
@@ -113,17 +106,4 @@
       
       if (!key || key == 'Escape' || key == 'Enter') display.removeAttribute('hidden')
       if (key == 'Enter' && display.innerText != edit.value) setText(parseInt(edit.dataset.id), edit.value)
-    }
-
-    mounted() {
-      const setFiltered = (filter) => this.update({
-        todos: todos.map((e,i) => {e.id = i; return e})
-          .filter(e => !filter || (filter == 'completed' ? e.done : !e.done))
-      })
-
-      addEventListener(key, () => setFiltered(router.state.filter))
-      router.on('filter', ({ filter }) => setFiltered(filter))
-      setFiltered(router.state.filter)
-    }
-  </script>
-</main>
+    } -->

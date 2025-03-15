@@ -95,11 +95,15 @@ header {
 }
 
 footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   text-align: center;
   font-size: small;
+
+  :first-child {
+    float: left;
+  }
+  :last-child {
+    float: right;
+  }
 }
 
 header,
@@ -118,6 +122,7 @@ footer {
 nav {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.25em;
 
   a {
