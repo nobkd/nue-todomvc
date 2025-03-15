@@ -95,7 +95,9 @@ header {
 }
 
 footer {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   font-size: small;
 
   :first-child {
